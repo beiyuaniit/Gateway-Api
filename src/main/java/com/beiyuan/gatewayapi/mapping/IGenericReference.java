@@ -1,5 +1,7 @@
 package com.beiyuan.gatewayapi.mapping;
 
+import java.util.Map;
+
 /**
  * 映射层，将
  * 泛化通用接口
@@ -8,7 +10,9 @@ package com.beiyuan.gatewayapi.mapping;
  */
 public interface IGenericReference {
     //标识符必须以字母、下划线_ 、美元符$开头
-    String  $invoke(String args);
+
+    //返回值类型用Object接收，不用指定
+    Object  $invoke(Map<String,Object>params);
 
     /*
       Enhancer enhancer=new Enhancer();

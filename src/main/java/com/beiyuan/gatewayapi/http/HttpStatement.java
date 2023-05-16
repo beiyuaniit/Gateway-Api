@@ -17,16 +17,23 @@ public class HttpStatement {
 
     private HttpCommandType commandType;
 
-    public HttpStatement(String applicationName, String interfaceName, String methodName, String uri, HttpCommandType commandType) {
+    private String paramterType;
+    public HttpStatement(String applicationName, String uri,String interfaceName,
+                         String methodName, String paramterType, HttpCommandType commandType) {
         this.applicationName = applicationName;
         this.interfaceName = interfaceName;
         this.methodName = methodName;
         this.uri = uri;
         this.commandType = commandType;
+        this.paramterType=paramterType;
     }
 
     public String getApplicationName() {
         return applicationName;
+    }
+
+    public String getParamterType() {
+        return paramterType;
     }
 
     public String getInterfaceName() {

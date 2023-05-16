@@ -4,6 +4,8 @@ import com.beiyuan.gatewayapi.http.HttpCommandType;
 import com.beiyuan.gatewayapi.session.Configuration;
 import com.beiyuan.gatewayapi.session.GatewaySession;
 
+import java.util.Map;
+
 /**
  * 绑定调用方法类型
  * @author: beiyuan
@@ -23,7 +25,7 @@ public class MapperMethod {
     }
 
     //根据不同的请求类型执行不同的调用
-    public Object execute(GatewaySession session,Object[] args){
+    public Object execute(GatewaySession session, Map<String, Object> args){
         Object result = null;
         switch (commandType){
             case GET:

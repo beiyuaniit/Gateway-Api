@@ -2,6 +2,7 @@ package com.beiyuan.gatewayapi.socket.handlers;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.beiyuan.gatewayapi.http.RequestParser;
 import com.beiyuan.gatewayapi.mapping.IGenericReference;
 import com.beiyuan.gatewayapi.session.GatewaySession;
 import com.beiyuan.gatewayapi.session.GatewaySessionFactory;
@@ -14,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Date;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -49,13 +51,17 @@ public class GatewayServerHandler extends BaseHandler<FullHttpRequest> {
 
         logger.info("gateway received a request: uri={},method={}",request.uri(),request.method());
 
+        //解析请求参数
+        Map<String, Object> params = new RequestParser(request).parse();
+        //舍弃uri ?以及之后的参数
         String uri=request.uri();
+        int idx=uri.indexOf("?");
+        if(idx>0){
+            uri=uri.substring(0,idx);
+        }
 
-        //设置响应
-        DefaultFullHttpResponse response=new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);//OK是200
-//        String content="your had visited the gateway of beiyaun with uri="+request.uri();
-//        //先设置消息体
-//        response.content().writeBytes(JSON.toJSONBytes(content, SerializerFeature.PrettyFormat));
+
+
 
 
         //设置消息体
@@ -65,13 +71,27 @@ public class GatewayServerHandler extends BaseHandler<FullHttpRequest> {
 
         //根据rpc调用服务的结果创建了本地的代理类
         //IGenericReference reference= sessionFactory.getGenericReference(methodName);
-        //通过本地代理类进行调用
+        //通过本地代理类进行调用。本地代理类内再通过本地创建的dubbo代理类取调用服务
         //String result=reference.$invoke("test kkkkk");
 
         GatewaySession gatewaySession = sessionFactory.openSession(uri);
         IGenericReference reference=gatewaySession.getProxy();
 
-        String result=reference.$invoke("this is args ")+"   "+new Date().getTime();
+        Object result=null;
+        try {
+            result=reference.$invoke(params)+"   "+new Date().getTime();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+
+
+        //设置响应
+        DefaultFullHttpResponse response=new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);//OK是200
+//        String content="your had visited the gateway of beiyaun with uri="+request.uri();
+//        //先设置消息体
+//        response.content().writeBytes(JSON.toJSONBytes(content, SerializerFeature.PrettyFormat));
         response.content().writeBytes(JSON.toJSONBytes(result,SerializerFeature.PrettyFormat));
         //设置头部
         HttpHeaders headers=response.headers();
