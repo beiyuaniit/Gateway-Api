@@ -11,14 +11,14 @@ import com.beiyuan.gatewayapi.session.GatewaySession;
  */
 public class MapperMethod {
 
-    private final String uri;
+    String methodName;
 
     private final HttpCommandType commandType;
 
 
     //对每个方法绑定uri和调用方式
     public MapperMethod(String uri, Configuration configuration) {
-        this.uri = uri;
+        this.methodName=configuration.getHttpStatement(uri).getMethodName();
         this.commandType = configuration.getHttpStatement(uri).getCommandType();
     }
 
@@ -28,7 +28,7 @@ public class MapperMethod {
         switch (commandType){
             case GET:
                 //一开始这里没设置result。。。
-                result=session.getTargetMethodResult(uri,args);
+                result=session.getTargetMethodResult(methodName,args);
                 break;
             case POST:
                 break;

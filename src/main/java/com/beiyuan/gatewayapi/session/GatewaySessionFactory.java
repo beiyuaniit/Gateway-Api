@@ -12,5 +12,5 @@ import java.util.concurrent.Future;
 public interface GatewaySessionFactory {
 
     //打开会话，简称开启gateway服务器
-   GatewaySession openSession();
+   GatewaySession openSession(String uri);
 }

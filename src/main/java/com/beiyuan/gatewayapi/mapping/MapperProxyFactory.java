@@ -32,7 +32,6 @@ public class MapperProxyFactory {
             HttpStatement httpStatement=session.getConfiguration().getHttpStatement(uri);
             //泛化调用
             MapperProxy mapperProxy=new MapperProxy(uri,session);
-
             //创建接口
             InterfaceMaker interfaceMaker=new InterfaceMaker();
             interfaceMaker.add(new Signature(httpStatement.getMethodName(), Type.getType(String.class),

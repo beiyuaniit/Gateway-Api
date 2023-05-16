@@ -1,15 +1,13 @@
 package com.beiyuan.gatewayapi.session.defaults;
 
-import com.beiyuan.gatewayapi.http.HttpStatement;
+import com.beiyuan.gatewayapi.datasource.Connection;
+import com.beiyuan.gatewayapi.datasource.DataSource;
+import com.beiyuan.gatewayapi.datasource.DataSourceFactory;
+import com.beiyuan.gatewayapi.datasource.unpooled.UnpooledDataSourceFactory;
+
 import com.beiyuan.gatewayapi.mapping.IGenericReference;
 import com.beiyuan.gatewayapi.session.Configuration;
 import com.beiyuan.gatewayapi.session.GatewaySession;
-import org.apache.dubbo.config.ApplicationConfig;
-import org.apache.dubbo.config.ReferenceConfig;
-import org.apache.dubbo.config.RegistryConfig;
-import org.apache.dubbo.config.bootstrap.DubboBootstrap;
-import org.apache.dubbo.config.utils.ReferenceConfigCache;
-import org.apache.dubbo.rpc.service.GenericService;
 
 
 /**
@@ -19,41 +17,30 @@ import org.apache.dubbo.rpc.service.GenericService;
 public class DefaultGatewaySession implements GatewaySession {
 
 
-    private final Configuration configuration;
+    private  Configuration configuration;
 
-    public DefaultGatewaySession(Configuration configuration) {
+    public DefaultGatewaySession(Configuration configuration, DataSource dataSource, String uri) {
         this.configuration = configuration;
+        this.dataSource = dataSource;
+        this.uri = uri;
     }
+
+    private DataSource dataSource;
+
+    private String uri;
 
     /**
      * 通过dubbo 的rpc 真正去调用目标方法
-     * @param uri
+     *
      * @param args
      * @return
      */
     @Override
-    public Object getTargetMethodResult(String uri, Object args) {
-        //获取http信息
-        HttpStatement httpStatement=configuration.getHttpStatement(uri);
-        String applicationName=httpStatement.getApplicationName();
-        String interfaceName=httpStatement.getInterfaceName();
+    public Object getTargetMethodResult(String methodName, Object[] args) {
 
-        //获取配置
-        ApplicationConfig applicationConfig=configuration.getApplicationConfig(applicationName);
-        RegistryConfig registryConfig=configuration.getRegistryConfig(applicationName);
-        ReferenceConfig<GenericService> referenceConfig=configuration.getReferenceConfig(interfaceName);
-
-
-        //dubbo调用目标方法
-        DubboBootstrap bootstrap=DubboBootstrap.getInstance();
-        bootstrap.application(applicationConfig).registry(registryConfig).reference(referenceConfig).start();
-
-        //获取泛化调用服务
-        ReferenceConfigCache cache=ReferenceConfigCache.getCache();
-        GenericService genericService=cache.get(referenceConfig);
+        Connection connection=dataSource.getConnection();
         //返回结果类型为String
-        return genericService.$invoke(httpStatement.getMethodName(),
-                new String[]{"java.lang.String"},new Object[]{" kafka "});
+        return connection.execute(methodName,new String[]{"java.lang.String"},args);
     }
 
     @Override
@@ -62,7 +49,7 @@ public class DefaultGatewaySession implements GatewaySession {
     }
 
     @Override
-    public IGenericReference getProxy(String uri) {
+    public IGenericReference getProxy() {
         return configuration.getGenericReference(uri,this);
     }
 }

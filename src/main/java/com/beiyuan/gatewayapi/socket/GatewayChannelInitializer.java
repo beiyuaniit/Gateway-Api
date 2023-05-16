@@ -33,8 +33,6 @@ public class GatewayChannelInitializer extends ChannelInitializer<SocketChannel>
     @Override
     protected void initChannel(SocketChannel socketChannel) throws Exception {
         ChannelPipeline pipeline=socketChannel.pipeline();
-
-
         //类似于序列化和反序列化
         //添加请求解码器，解析http请求格式的消息
         pipeline.addLast(new HttpRequestDecoder());

@@ -9,9 +9,9 @@ import com.beiyuan.gatewayapi.mapping.IGenericReference;
  * @date: 2023/5/15  9:56
  */
 public interface GatewaySession {
-    Object getTargetMethodResult(String uri,Object args);
+    Object getTargetMethodResult(String uri,Object[] args);
 
     Configuration getConfiguration();
 
-    IGenericReference getProxy(String uri);
+    IGenericReference getProxy();
 }

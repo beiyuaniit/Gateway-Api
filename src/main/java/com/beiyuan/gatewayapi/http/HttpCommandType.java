@@ -6,6 +6,4 @@ package com.beiyuan.gatewayapi.http;
  */
 public enum HttpCommandType {
     GET, POST, PUT, DELETE,UNKNOWN
-
-    
 }

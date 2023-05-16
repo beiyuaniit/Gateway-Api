@@ -1,10 +1,8 @@
-package com.beiyuan.gatewayapi.chapter_03;
+package com.beiyuan.gatewayapi.chapter_04;
 
 import com.beiyuan.gatewayapi.http.HttpCommandType;
 import com.beiyuan.gatewayapi.http.HttpStatement;
 import com.beiyuan.gatewayapi.session.Configuration;
-import com.beiyuan.gatewayapi.session.GatewaySession;
-import com.beiyuan.gatewayapi.session.GatewaySessionFactory;
 import com.beiyuan.gatewayapi.session.defaults.DefaultGatewaySessionFactory;
 import com.beiyuan.gatewayapi.socket.GatewaySocketServer;
 import io.netty.channel.Channel;
@@ -21,11 +19,13 @@ import java.util.concurrent.TimeUnit;
  * @author: beiyuan
  * @date: 2023/5/15  14:36
  */
+
 public class ApiTest {
 
     Logger logger= LoggerFactory.getLogger(getClass());
 
 
+    //和chapter_03的一模一样
     //这里是创建网关服务器并启动。
     //访问localhost:7397/session/test
     @Test

@@ -35,6 +35,8 @@ public class GatewayServerHandler extends BaseHandler<FullHttpRequest> {
      */
    private final Logger logger= LoggerFactory.getLogger(GatewayServerHandler.class);
 
+
+   //已经有人创建好了
    private  final DefaultGatewaySessionFactory sessionFactory;
 
     public GatewayServerHandler(DefaultGatewaySessionFactory sessionFactory) {
@@ -47,6 +49,7 @@ public class GatewayServerHandler extends BaseHandler<FullHttpRequest> {
 
         logger.info("gateway received a request: uri={},method={}",request.uri(),request.method());
 
+        String uri=request.uri();
 
         //设置响应
         DefaultFullHttpResponse response=new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);//OK是200
@@ -65,9 +68,9 @@ public class GatewayServerHandler extends BaseHandler<FullHttpRequest> {
         //通过本地代理类进行调用
         //String result=reference.$invoke("test kkkkk");
 
-        GatewaySession gatewaySession = sessionFactory.openSession();
+        GatewaySession gatewaySession = sessionFactory.openSession(uri);
+        IGenericReference reference=gatewaySession.getProxy();
 
-        IGenericReference reference=gatewaySession.getProxy(request.uri());
         String result=reference.$invoke("this is args ")+"   "+new Date().getTime();
         response.content().writeBytes(JSON.toJSONBytes(result,SerializerFeature.PrettyFormat));
         //设置头部
