@@ -2,10 +2,11 @@ package com.beiyuan.gatewayapi.socket.handlers;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.beiyuan.gatewayapi.datasource.request.http.ResponseRender;
 import com.beiyuan.gatewayapi.http.RequestParser;
 import com.beiyuan.gatewayapi.mapping.IGenericReference;
 import com.beiyuan.gatewayapi.session.GatewaySession;
-import com.beiyuan.gatewayapi.session.GatewaySessionFactory;
+
 import com.beiyuan.gatewayapi.session.defaults.DefaultGatewaySessionFactory;
 import com.beiyuan.gatewayapi.socket.BaseHandler;
 import io.netty.channel.Channel;
@@ -16,7 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
+
 
 /**
  * session处理器，对请求进行设置
@@ -60,6 +61,11 @@ public class GatewayServerHandler extends BaseHandler<FullHttpRequest> {
             uri=uri.substring(0,idx);
         }
 
+        if(uri.equals("/favicon.ico")){
+            //uri前面的小图标，没有的话浏览器会自动请求一个
+            //设置有的话就自己写回一个图标
+            return;
+        }
 
 
 
@@ -74,52 +80,28 @@ public class GatewayServerHandler extends BaseHandler<FullHttpRequest> {
         //通过本地代理类进行调用。本地代理类内再通过本地创建的dubbo代理类取调用服务
         //String result=reference.$invoke("test kkkkk");
 
-        GatewaySession gatewaySession = sessionFactory.openSession(uri);
-        IGenericReference reference=gatewaySession.getProxy();
-
-        Object result=null;
+        //获取远程连接源
         try {
-            result=reference.$invoke(params)+"   "+new Date().getTime();
+            GatewaySession gatewaySession = sessionFactory.openSession(uri);
+            //获取本地代理对象
+            IGenericReference reference=gatewaySession.getProxy();
+
+            Object result=null;
+            try {
+                //通过本地调用远程获取结果
+                result=reference.$invoke(params)+"   "+new Date().getTime();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+            //渲染结果
+            FullHttpResponse response= ResponseRender.reder(result);
+            //写回响应给同一pipeline中的其他handler
+            ctx.writeAndFlush(response);
         }catch (Exception e){
             e.printStackTrace();
         }
 
 
-
-
-        //设置响应
-        DefaultFullHttpResponse response=new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);//OK是200
-//        String content="your had visited the gateway of beiyaun with uri="+request.uri();
-//        //先设置消息体
-//        response.content().writeBytes(JSON.toJSONBytes(content, SerializerFeature.PrettyFormat));
-        response.content().writeBytes(JSON.toJSONBytes(result,SerializerFeature.PrettyFormat));
-        //设置头部
-        HttpHeaders headers=response.headers();
-        //响应类型   HttpHeaderValues.APPLICATION_JSON="application/json"
-        headers.add(HttpHeaderNames.CONTENT_TYPE,HttpHeaderValues.APPLICATION_JSON+"; charset=UTF-8");
-        //长度
-        //    /**
-        //     * Returns the number of readable bytes which is equal to
-        //     * {@code (this.writerIndex - this.readerIndex)}.
-        //     */
-        //    public abstract int readableBytes();
-        headers.add(HttpHeaderNames.CONTENT_LENGTH,response.content().readableBytes());
-        //长连接
-        headers.add(HttpHeaderNames.CONNECTION,HttpHeaderValues.KEEP_ALIVE);
-        //设置可跨域访问
-        // 配置跨域访问
-        headers.add(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN,"*");
-        headers.add(HttpHeaderNames.ACCESS_CONTROL_ALLOW_HEADERS,"*");
-        headers.add(HttpHeaderNames.ACCESS_CONTROL_ALLOW_METHODS,"GET, POST, PUT, DELETE");
-        /*
-        客户端代码必须将 XMLHttpRequest 上的 withCredentials 属性设置为 true 以授予权限.
-        但是，仅此标头是不够的.服务器必须以 Access-Control-Allow-Credentials 标头响应.使用此标头响应 true 意味着服务器允许将 cookie(或其他用户凭据)包含在跨域请求中.
-        您还需要确保 如果您希望跨域凭据请求正常工作，您的浏览器不会阻止第三方 cookie.
-        请注意，无论您是发出同源请求还是跨源请求，您都需要保护您的网站免受 CSRF 的影响(尤其是当您的请求包含 cookie 时).
-         */
-        headers.add(HttpHeaderNames.ACCESS_CONTROL_ALLOW_CREDENTIALS,true);
-
-        //写回响应给同一pipeline中的其他handler
-        ctx.writeAndFlush(response);
     }
 }

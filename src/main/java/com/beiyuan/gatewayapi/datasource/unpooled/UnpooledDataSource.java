@@ -40,7 +40,6 @@ public class UnpooledDataSource implements DataSource {
                 //未来补充
                 break;
             case DUBBO:
-
                return new DubboConnection(
                         configuration.getApplicationConfig(httpStatement.getApplicationName()),
                         configuration.getRegistryConfig(httpStatement.getApplicationName()),

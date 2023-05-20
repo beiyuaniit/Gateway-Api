@@ -56,12 +56,9 @@ public class Configuration {
         reference.setVersion("1.0.0");
         reference.setGeneric("true");  //设置为泛化接口
 
-
         applicationConfigMap.put("api-gateway-test",application);
         registryConfigMap.put("api-gateway-test",registry);
         referenceConfigMap.put("com.beiyuan.gateway.rpc.IActivity",reference);
-
-
 
     }
 

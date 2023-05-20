@@ -1,4 +1,4 @@
-package com.beiyuan.gatewayapi.chapter_05;
+package com.beiyuan.gatewayapi.chapter_06;
 
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;

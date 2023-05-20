@@ -1,9 +1,5 @@
 package com.beiyuan.gatewayapi.session;
 
-import io.netty.channel.Channel;
-
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 /**
  * @author: beiyuan

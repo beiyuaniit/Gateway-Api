@@ -19,6 +19,7 @@ public class UnpooledDataSourceFactory implements DataSourceFactory {
     }
 
     //用set方法是为了可更换。只用set方法就得每次都创建。都用就不好说
+    //这里配置了为Dubbo源
     @Override
     public void SetProperties(Configuration configuration, String uri) {
         unpooledDataSource.setConfiguration(configuration);

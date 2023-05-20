@@ -1,4 +1,4 @@
-package com.beiyuan.gatewayapi.chapter_05;
+package com.beiyuan.gatewayapi.chapter_06;
 
 import com.beiyuan.gatewayapi.http.HttpCommandType;
 import com.beiyuan.gatewayapi.http.HttpStatement;
@@ -42,6 +42,7 @@ public class ApiTest {
                 HttpCommandType.GET
                 );
         //http://localhost:7397/session/test?name=kkk     单个参数
+        //jmeter测试：3000*10    两个线程组：
         HttpStatement httpStatement2=new HttpStatement(
                 "api-gateway-test",
                 "/session/test",
@@ -51,6 +52,7 @@ public class ApiTest {
                 HttpCommandType.GET
         );
 
+        //http://localhost:7397/session/noargs
         HttpStatement httpStatement3=new HttpStatement(
                 "api-gateway-test",
                 "/session/noargs",
@@ -72,7 +74,9 @@ public class ApiTest {
         //线程类.将会话传给服务器。这里应该设置为可添加多个
         GatewaySocketServer socketServer=new GatewaySocketServer(gatewaySessionFactory);
         //启动服务器
-        Future<Channel> future = Executors.newFixedThreadPool(2).submit(socketServer);
+        //http://localhost:7397/session/test?name=kkk     单个参数
+        //jmeter测试：3000*10    两个线程组：6300   4个：4777    .。。
+        Future<Channel> future = Executors.newFixedThreadPool(4).submit(socketServer);
         Channel channel= future.get();
 
         if(channel==null){

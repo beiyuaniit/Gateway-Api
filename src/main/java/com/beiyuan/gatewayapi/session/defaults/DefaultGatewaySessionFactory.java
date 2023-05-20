@@ -3,6 +3,8 @@ package com.beiyuan.gatewayapi.session.defaults;
 import com.beiyuan.gatewayapi.datasource.DataSource;
 import com.beiyuan.gatewayapi.datasource.DataSourceFactory;
 import com.beiyuan.gatewayapi.datasource.unpooled.UnpooledDataSourceFactory;
+import com.beiyuan.gatewayapi.executor.Executor;
+import com.beiyuan.gatewayapi.executor.SimpleExecutor;
 import com.beiyuan.gatewayapi.session.Configuration;
 import com.beiyuan.gatewayapi.session.GatewaySession;
 import com.beiyuan.gatewayapi.session.GatewaySessionFactory;
@@ -24,7 +26,9 @@ public class DefaultGatewaySessionFactory implements GatewaySessionFactory {
     public GatewaySession openSession(String uri){
         DataSourceFactory dataSourceFactory=new UnpooledDataSourceFactory();
         dataSourceFactory.SetProperties(configuration,uri);
-        return new DefaultGatewaySession(configuration,dataSourceFactory.getDataSource(),uri);
+
+        Executor executor=new SimpleExecutor(configuration,dataSourceFactory.getDataSource().getConnection());
+        return new DefaultGatewaySession(configuration,uri,executor);
     }
 
 

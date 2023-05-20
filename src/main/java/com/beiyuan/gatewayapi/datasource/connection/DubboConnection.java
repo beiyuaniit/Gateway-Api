@@ -15,13 +15,13 @@ import org.apache.dubbo.rpc.service.GenericService;
  */
 public class DubboConnection implements Connection {
 
+
     private GenericService genericService;
 
     //一个配置要设置一个数据源。。
     public DubboConnection(ApplicationConfig application, RegistryConfig registry, ReferenceConfig<GenericService> reference) {
         //通过Dubbo进行对服务提供者进行远程方法调用
         DubboBootstrap bootstrap = DubboBootstrap.getInstance();
-
 
         bootstrap.application(application).registry(registry).reference(reference).start();
         ReferenceConfigCache cache = ReferenceConfigCache.getCache();
@@ -35,6 +35,12 @@ public class DubboConnection implements Connection {
         if (genericService == null) {
             throw new RuntimeException("please init the DubboConnection");
         }
-        return genericService.$invoke(method, parameterType, args);
+        try {
+            return genericService.$invoke(method, parameterType, args);
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+
     }
 }
