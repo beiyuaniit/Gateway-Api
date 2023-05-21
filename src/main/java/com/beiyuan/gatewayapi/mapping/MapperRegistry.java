@@ -1,6 +1,6 @@
 package com.beiyuan.gatewayapi.mapping;
 
-import com.beiyuan.gatewayapi.http.HttpStatement;
+import com.beiyuan.gatewayapi.protocol.http.HttpStatement;
 import com.beiyuan.gatewayapi.session.Configuration;
 import com.beiyuan.gatewayapi.session.GatewaySession;
 

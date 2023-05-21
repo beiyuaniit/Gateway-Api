@@ -1,4 +1,4 @@
-package com.beiyuan.gatewayapi.http;
+package com.beiyuan.gatewayapi.protocol.http;
 
 /**
  * @author: beiyuan

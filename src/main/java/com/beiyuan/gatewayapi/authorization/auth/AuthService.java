@@ -42,7 +42,7 @@ public class AuthService implements IAuth {
             //
             return subject.isAuthenticated();
         }catch (Exception e){
-            e.printStackTrace();
+           // e.printStackTrace();
             return false;
         }
         finally {

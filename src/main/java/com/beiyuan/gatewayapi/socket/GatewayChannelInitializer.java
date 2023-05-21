@@ -1,8 +1,11 @@
 package com.beiyuan.gatewayapi.socket;
 
 //不要导错包
+import com.beiyuan.gatewayapi.session.Configuration;
 import com.beiyuan.gatewayapi.session.defaults.DefaultGatewaySessionFactory;
-import com.beiyuan.gatewayapi.socket.handlers.GatewayServerHandler;
+import com.beiyuan.gatewayapi.socket.handlers.AuthorizationHandler;
+import com.beiyuan.gatewayapi.socket.handlers.GatewaySessionHandler;
+import com.beiyuan.gatewayapi.socket.handlers.RpcHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -24,14 +27,19 @@ public class GatewayChannelInitializer extends ChannelInitializer<SocketChannel>
 //        this.configuration = configuration;
 //    }
 
+
+
     private final DefaultGatewaySessionFactory gatewaySessionFactory;
 
     public GatewayChannelInitializer(DefaultGatewaySessionFactory gatewaySessionFactory) {
         this.gatewaySessionFactory = gatewaySessionFactory;
     }
 
+
     @Override
     protected void initChannel(SocketChannel socketChannel) throws Exception {
+
+        Configuration configuration=gatewaySessionFactory.getConfiguration();
         ChannelPipeline pipeline=socketChannel.pipeline();
         //类似于序列化和反序列化
         //添加请求解码器，解析http请求格式的消息
@@ -41,8 +49,13 @@ public class GatewayChannelInitializer extends ChannelInitializer<SocketChannel>
         //HttpObjectAggregator 是 Netty 提供的 HTTP 消息聚合器，通过它可以把 HttpMessage 和 HttpContent 聚合成一个 FullHttpRequest
         // 或者 FullHttpResponse(取决于是处理请求还是响应），方便我们使用。
         pipeline.addLast(new HttpObjectAggregator(1024*1024));
+
+
         //自定义的会话处理器
-        pipeline.addLast(new GatewayServerHandler(gatewaySessionFactory));
+        pipeline.addLast(new GatewaySessionHandler(configuration));//会话处理
+        pipeline.addLast(new AuthorizationHandler(configuration));//权限验证
+        pipeline.addLast(new RpcHandler(gatewaySessionFactory));//调用rpc
+
     }
 
 }

@@ -1,4 +1,4 @@
-package com.beiyuan.gatewayapi.datasource.request.http;
+package com.beiyuan.gatewayapi.protocol.http;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;

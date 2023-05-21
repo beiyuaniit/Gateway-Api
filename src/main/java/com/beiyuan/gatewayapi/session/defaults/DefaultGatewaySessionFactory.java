@@ -31,5 +31,7 @@ public class DefaultGatewaySessionFactory implements GatewaySessionFactory {
         return new DefaultGatewaySession(configuration,uri,executor);
     }
 
-
+    public Configuration getConfiguration() {
+        return configuration;
+    }
 }

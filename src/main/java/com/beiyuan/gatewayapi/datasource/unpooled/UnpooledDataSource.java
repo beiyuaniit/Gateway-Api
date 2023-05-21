@@ -4,7 +4,7 @@ import com.beiyuan.gatewayapi.datasource.Connection;
 import com.beiyuan.gatewayapi.datasource.DataSource;
 import com.beiyuan.gatewayapi.datasource.DataSourceType;
 import com.beiyuan.gatewayapi.datasource.connection.DubboConnection;
-import com.beiyuan.gatewayapi.http.HttpStatement;
+import com.beiyuan.gatewayapi.protocol.http.HttpStatement;
 import com.beiyuan.gatewayapi.session.Configuration;
 
 /**

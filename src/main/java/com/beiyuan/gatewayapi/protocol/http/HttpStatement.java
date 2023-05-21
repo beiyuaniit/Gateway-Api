@@ -1,4 +1,4 @@
-package com.beiyuan.gatewayapi.datasource.request.http;
+package com.beiyuan.gatewayapi.protocol.http;
 
 /**
  * http请求信息
@@ -18,14 +18,17 @@ public class HttpStatement {
     private HttpCommandType commandType;
 
     private String paramterType;
+
+    private boolean needAuth;
     public HttpStatement(String applicationName, String uri,String interfaceName,
-                         String methodName, String paramterType, HttpCommandType commandType) {
+                         String methodName, String paramterType, HttpCommandType commandType,boolean needAuth) {
         this.applicationName = applicationName;
         this.interfaceName = interfaceName;
         this.methodName = methodName;
         this.uri = uri;
         this.commandType = commandType;
         this.paramterType=paramterType;
+        this.needAuth=needAuth;
     }
 
     public String getApplicationName() {
@@ -52,5 +55,9 @@ public class HttpStatement {
 
     public HttpCommandType getCommandType() {
         return commandType;
+    }
+
+    public boolean needAuth(){
+        return this.needAuth;
     }
 }

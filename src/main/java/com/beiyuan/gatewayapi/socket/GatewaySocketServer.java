@@ -1,5 +1,6 @@
 package com.beiyuan.gatewayapi.socket;
 
+import com.beiyuan.gatewayapi.session.Configuration;
 import com.beiyuan.gatewayapi.session.defaults.DefaultGatewaySessionFactory;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -29,6 +30,8 @@ public class GatewaySocketServer implements Callable<Channel> {
     private Channel channel;
 
     private final DefaultGatewaySessionFactory gatewaySessionFactory;
+
+
 
     public GatewaySocketServer(DefaultGatewaySessionFactory gatewaySessionFactory) {
         this.gatewaySessionFactory = gatewaySessionFactory;

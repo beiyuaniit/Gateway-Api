@@ -1,7 +1,7 @@
 package com.beiyuan.gatewayapi.executor;
 
-import com.beiyuan.gatewayapi.executor.result.GatewayResult;
-import com.beiyuan.gatewayapi.http.HttpStatement;
+import com.beiyuan.gatewayapi.executor.result.RpcResult;
+import com.beiyuan.gatewayapi.protocol.http.HttpStatement;
 
 import java.util.Map;
 
@@ -12,5 +12,5 @@ import java.util.Map;
  */
 public interface Executor {
 
-    GatewayResult execute(HttpStatement httpStatement, Map<String,Object>params) throws Exception;
+    RpcResult execute(HttpStatement httpStatement, Map<String,Object>params) throws Exception;
 }

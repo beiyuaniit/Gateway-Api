@@ -1,7 +1,9 @@
 package com.beiyuan.gatewayapi.session;
 
+import com.beiyuan.gatewayapi.authorization.IAuth;
+import com.beiyuan.gatewayapi.authorization.auth.AuthService;
 import com.beiyuan.gatewayapi.mapping.MapperRegistry;
-import com.beiyuan.gatewayapi.http.HttpStatement;
+import com.beiyuan.gatewayapi.protocol.http.HttpStatement;
 import com.beiyuan.gatewayapi.mapping.IGenericReference;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
@@ -22,6 +24,8 @@ public class Configuration {
    //private final GenericReferenceRegistry registry=new GenericReferenceRegistry(this);
 
 
+    //配置这里选择验证方式
+    IAuth auth=new AuthService();
     private final MapperRegistry mapperRegistry=new MapperRegistry(this);
 
     //http请求信息。key是uri
@@ -91,5 +95,9 @@ public class Configuration {
     }
     public IGenericReference getGenericReference(String uri,GatewaySession gatewaySession) {
         return mapperRegistry.getGenericReference(uri,gatewaySession);
+    }
+
+    public boolean authValidate(String uid,String token){
+        return auth.validate(uid,token);
     }
 }

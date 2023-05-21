@@ -1,8 +1,9 @@
 package com.beiyuan.gatewayapi.executor;
 
 import com.beiyuan.gatewayapi.datasource.Connection;
-import com.beiyuan.gatewayapi.executor.result.GatewayResult;
-import com.beiyuan.gatewayapi.http.HttpStatement;
+import com.beiyuan.gatewayapi.executor.result.RpcResult;
+import com.beiyuan.gatewayapi.protocol.http.HttpConstants;
+import com.beiyuan.gatewayapi.protocol.http.HttpStatement;
 import com.beiyuan.gatewayapi.session.Configuration;
 import com.beiyuan.gatewayapi.util.SimpleTypeUtil;
 
@@ -26,7 +27,7 @@ public abstract class BaseExecutor implements Executor {
     }
 
     @Override
-    public GatewayResult execute(HttpStatement httpStatement, Map<String, Object> params) throws Exception {
+    public RpcResult execute(HttpStatement httpStatement, Map<String, Object> params) throws Exception {
 
         String methodName = httpStatement.getMethodName();
         String paramterType = httpStatement.getParamterType();
@@ -34,9 +35,9 @@ public abstract class BaseExecutor implements Executor {
         if(params.size()==0){
             try {
                 Object data=doExecute(methodName,null,null);
-                return GatewayResult.success(data);
+                return RpcResult.success(HttpConstants.ResponseCode._200,data);
             }catch (Exception e){
-                return GatewayResult.failure("remote invoke failed..");
+                return RpcResult.failure(HttpConstants.ResponseCode._502,null);
             }
 
         }
@@ -46,10 +47,10 @@ public abstract class BaseExecutor implements Executor {
         try {
             Object data=doExecute(methodName,new String[]{paramterType},
                     args);
-            return GatewayResult.success(data);
+            return RpcResult.success(HttpConstants.ResponseCode._200,data);
         }catch (Exception e){
             e.printStackTrace();
-            return GatewayResult.failure(e.getMessage());
+            return RpcResult.failure(HttpConstants.ResponseCode._500,null);
         }
     }
     

@@ -1,4 +1,4 @@
-package com.beiyuan.gatewayapi.datasource.request.http;
+package com.beiyuan.gatewayapi.protocol.http;
 
 import com.alibaba.fastjson.JSON;
 import io.netty.buffer.ByteBuf;
@@ -27,6 +27,23 @@ public class RequestParser {
 
     public RequestParser(FullHttpRequest request) {
         this.request = request;
+    }
+
+    //获取uri 提供静态非静态。非静态的轻量级点，不用创建对象
+    public static String getUri(FullHttpRequest request) {
+        String uri = request.uri();
+        int idx = uri.indexOf("?");
+        uri = idx > 0 ? uri.substring(0, idx) : uri;
+        if (uri.equals("/favicon.ico")) return null;
+        return uri;
+    }
+
+    public String getUri() {
+        String uri = this.request.uri();
+        int idx = uri.indexOf("?");
+        uri = idx > 0 ? uri.substring(0, idx) : uri;
+        if (uri.equals("/favicon.ico")) return null;
+        return uri;
     }
 
     private String getContentType() {
@@ -84,13 +101,13 @@ public class RequestParser {
                             e.printStackTrace();
                         }
                     });
+                case "none":
+                    return new HashMap<>();
                 default:
                     break;
             }
         }
-
         throw new RuntimeException("The request method of " + method+" is not supported");
-
 
     }
 

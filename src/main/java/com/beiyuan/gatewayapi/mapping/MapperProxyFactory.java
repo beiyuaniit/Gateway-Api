@@ -1,6 +1,6 @@
 package com.beiyuan.gatewayapi.mapping;
 
-import com.beiyuan.gatewayapi.http.HttpStatement;
+import com.beiyuan.gatewayapi.protocol.http.HttpStatement;
 import com.beiyuan.gatewayapi.session.GatewaySession;
 import net.sf.cglib.core.Signature;
 import net.sf.cglib.proxy.Enhancer;
